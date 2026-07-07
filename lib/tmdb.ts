@@ -36,8 +36,14 @@ async function fetchFromTMDB(
   if (!response.ok) {
     const errorDetails = await response.text();
 
+    console.error("TMDB API error:", {
+      endpoint,
+      status: response.status,
+      details: errorDetails,
+    });
+
     throw new Error(
-      `TMDB request failed: ${response.status} ${response.statusText} - ${errorDetails}`
+      `TMDB request failed: ${response.status} ${response.statusText}`
     );
   }
 
@@ -74,7 +80,20 @@ export async function getDetails(
     throw new Error("Invalid media type");
   }
 
-  return fetchFromTMDB(`/${type}/${id}`, {
-    append_to_response: "videos,credits,recommendations",
-  });
+  if (!id || !/^\d+$/.test(id)) {
+    throw new Error("Invalid TMDB ID");
+  }
+
+  const [details, watchProviders] = await Promise.all([
+    fetchFromTMDB(`/${type}/${id}`, {
+      append_to_response: "videos,credits,recommendations",
+    }),
+
+    fetchFromTMDB(`/${type}/${id}/watch/providers`),
+  ]);
+
+  return {
+    ...details,
+    watchProviders,
+  };
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import WatchProviders from "@/components/WatchProviders";
 import { getDetails } from "@/lib/tmdb";
 
 export default async function TitleDetail({
@@ -14,8 +15,13 @@ export default async function TitleDetail({
   const item = await getDetails(type, id);
 
   const title = item.title || item.name || "Unknown title";
-  const releaseDate = item.release_date || item.first_air_date;
-  const year = releaseDate ? releaseDate.slice(0, 4) : "N/A";
+
+  const releaseDate =
+    item.release_date || item.first_air_date;
+
+  const year = releaseDate
+    ? releaseDate.slice(0, 4)
+    : "N/A";
 
   const duration =
     type === "movie"
@@ -45,8 +51,14 @@ export default async function TitleDetail({
 
   const recommendations =
     item.recommendations?.results
-      ?.filter((recommendation: any) => recommendation.poster_path)
+      ?.filter(
+        (recommendation: any) =>
+          recommendation.poster_path
+      )
       .slice(0, 10) || [];
+
+  const turkeyWatchProviders =
+    item.watchProviders?.results?.TR;
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -64,7 +76,9 @@ export default async function TitleDetail({
         )}
 
         <div className="absolute inset-0 bg-black/40" />
+
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-10">
@@ -84,6 +98,7 @@ export default async function TitleDetail({
                   width={500}
                   height={750}
                   priority
+                  sizes="280px"
                   className="w-full rounded-3xl border border-white/10 object-cover shadow-2xl shadow-black"
                 />
               ) : (
@@ -95,7 +110,9 @@ export default async function TitleDetail({
 
             <div className="max-w-4xl pb-4">
               <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-red-500">
-                {type === "movie" ? "Movie" : "TV Show"}
+                {type === "movie"
+                  ? "Movie"
+                  : "TV Show"}
               </p>
 
               <h1 className="text-5xl font-black tracking-tight md:text-7xl">
@@ -126,20 +143,24 @@ export default async function TitleDetail({
                   </span>
                 )}
 
-                {type === "tv" && item.number_of_seasons && (
-                  <span className="rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-md">
-                    {item.number_of_seasons}{" "}
-                    {item.number_of_seasons === 1
-                      ? "season"
-                      : "seasons"}
-                  </span>
-                )}
+                {type === "tv" &&
+                  item.number_of_seasons && (
+                    <span className="rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-md">
+                      {item.number_of_seasons}{" "}
+                      {item.number_of_seasons === 1
+                        ? "season"
+                        : "seasons"}
+                    </span>
+                  )}
               </div>
 
               {item.genres?.length > 0 && (
                 <div className="mt-5 flex flex-wrap gap-2">
                   {item.genres.map(
-                    (genre: { id: number; name: string }) => (
+                    (genre: {
+                      id: number;
+                      name: string;
+                    }) => (
                       <span
                         key={genre.id}
                         className="rounded-full border border-zinc-600 bg-zinc-950/60 px-4 py-2 text-sm text-zinc-200 backdrop-blur-md"
@@ -166,6 +187,13 @@ export default async function TitleDetail({
                   </a>
                 )}
 
+                <a
+                  href="#watch-providers"
+                  className="rounded-2xl border border-white/20 bg-white/10 px-7 py-4 font-bold backdrop-blur-md transition hover:bg-white/20"
+                >
+                  📺 Where to watch
+                </a>
+
                 <Link
                   href="/"
                   className="rounded-2xl border border-white/20 bg-white/10 px-7 py-4 font-bold backdrop-blur-md transition hover:bg-white/20"
@@ -179,12 +207,28 @@ export default async function TitleDetail({
       </section>
 
       <div className="mx-auto max-w-7xl space-y-20 px-6 pb-20">
+        {/* Türkiye'de nereden izlenir */}
+        <div
+          id="watch-providers"
+          className="scroll-mt-8"
+        >
+          <WatchProviders
+            providers={turkeyWatchProviders}
+          />
+        </div>
+
         {/* Fragman */}
         {trailer && (
-          <section id="trailer" className="scroll-mt-8">
+          <section
+            id="trailer"
+            className="scroll-mt-8"
+          >
             <div className="mb-6 flex items-center gap-3">
               <div className="h-8 w-1 rounded-full bg-red-600" />
-              <h2 className="text-3xl font-bold">Official Trailer</h2>
+
+              <h2 className="text-3xl font-bold">
+                Official Trailer
+              </h2>
             </div>
 
             <div className="aspect-video overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl">
@@ -204,7 +248,10 @@ export default async function TitleDetail({
           <section>
             <div className="mb-6 flex items-center gap-3">
               <div className="h-8 w-1 rounded-full bg-red-600" />
-              <h2 className="text-3xl font-bold">Cast</h2>
+
+              <h2 className="text-3xl font-bold">
+                Cast
+              </h2>
             </div>
 
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-5">
@@ -224,9 +271,13 @@ export default async function TitleDetail({
                   </div>
 
                   <div className="p-4">
-                    <h3 className="font-bold">{person.name}</h3>
+                    <h3 className="font-bold">
+                      {person.name}
+                    </h3>
+
                     <p className="mt-1 text-sm text-zinc-400">
-                      {person.character || "Unknown role"}
+                      {person.character ||
+                        "Unknown role"}
                     </p>
                   </div>
                 </article>
@@ -235,59 +286,68 @@ export default async function TitleDetail({
           </section>
         )}
 
-        {/* Öneriler */}
+        {/* Benzer yapımlar */}
         {recommendations.length > 0 && (
           <section>
             <div className="mb-6 flex items-center gap-3">
               <div className="h-8 w-1 rounded-full bg-red-600" />
+
               <h2 className="text-3xl font-bold">
                 You May Also Like
               </h2>
             </div>
 
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-5">
-              {recommendations.map((recommendation: any) => {
-                const recommendationTitle =
-                  recommendation.title ||
-                  recommendation.name ||
-                  "Unknown title";
+              {recommendations.map(
+                (recommendation: any) => {
+                  const recommendationTitle =
+                    recommendation.title ||
+                    recommendation.name ||
+                    "Unknown title";
 
-                const recommendationType =
-                  recommendation.media_type === "tv"
-                    ? "tv"
-                    : type;
+                  const recommendationType =
+                    recommendation.media_type === "tv"
+                      ? "tv"
+                      : recommendation.media_type ===
+                          "movie"
+                        ? "movie"
+                        : type;
 
-                return (
-                  <Link
-                    key={recommendation.id}
-                    href={`/title/${recommendationType}/${recommendation.id}`}
-                    className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 transition hover:-translate-y-1 hover:border-red-500"
-                  >
-                    <div className="relative aspect-[2/3] overflow-hidden">
-                      <Image
-                        src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`}
-                        alt={recommendationTitle}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-                        className="object-cover transition duration-300 group-hover:scale-105"
-                      />
-                    </div>
+                  return (
+                    <Link
+                      key={`${recommendationType}-${recommendation.id}`}
+                      href={`/title/${recommendationType}/${recommendation.id}`}
+                      className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 transition hover:-translate-y-1 hover:border-red-500"
+                    >
+                      <div className="relative aspect-[2/3] overflow-hidden">
+                        <Image
+                          src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`}
+                          alt={recommendationTitle}
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+                          className="object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      </div>
 
-                    <div className="p-4">
-                      <h3 className="line-clamp-2 font-bold">
-                        {recommendationTitle}
-                      </h3>
+                      <div className="p-4">
+                        <h3 className="line-clamp-2 font-bold">
+                          {recommendationTitle}
+                        </h3>
 
-                      <p className="mt-2 text-sm text-zinc-400">
-                        ⭐{" "}
-                        {typeof recommendation.vote_average === "number"
-                          ? recommendation.vote_average.toFixed(1)
-                          : "N/A"}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
+                        <p className="mt-2 text-sm text-zinc-400">
+                          ⭐{" "}
+                          {typeof recommendation.vote_average ===
+                          "number"
+                            ? recommendation.vote_average.toFixed(
+                                1
+                              )
+                            : "N/A"}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                }
+              )}
             </div>
           </section>
         )}
