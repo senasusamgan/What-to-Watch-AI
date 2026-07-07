@@ -106,8 +106,8 @@ export default function WatchProviders({
       ) : (
         <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
           <p className="text-zinc-400">
-            Bu yapım için şu anda Türkiye&apos;de bir izleme
-            seçeneği bulunamadı.
+            Bu yapım için şu anda Türkiye&apos;de bir izleme seçeneği
+            bulunamadı.
           </p>
         </div>
       )}
