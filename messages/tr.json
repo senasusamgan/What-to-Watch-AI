@@ -1,0 +1,43 @@
+{
+  "Home": {
+    "title": "Bu akşam ne izlesek?",
+    "subtitle": "Modunu anlat, yapay zekâ destekli film ve dizi önerileri al.",
+    "button": "Ara",
+    "placeholder": "Film veya dizi ara...",
+    "trending": "Şu Anda Popüler",
+    "searchResults": "Arama sonuçları:",
+    "noTitles": "İçerik bulunamadı.",
+    "movie": "Film",
+    "tvShow": "Dizi"
+  },
+  "AIForm": {
+    "label": "Yapay Zekâ Önerileri",
+    "title": "Ne izlemek istediğini anlat",
+    "description": "Ruh hâlini, istediğin türü, süreyi veya sevdiğin yapımları yaz. Yapay zekâ sana üç öneri hazırlasın.",
+    "placeholder": "Örneğin: Karanlık, sürükleyici ve iki saatten kısa bir bilim kurgu filmi istiyorum...",
+    "submit": "✨ Bana öner",
+    "loading": "Öneriler hazırlanıyor...",
+    "emptyError": "Lütfen nasıl bir şey izlemek istediğini yaz.",
+    "fetchError": "Öneriler alınırken bir hata oluştu.",
+    "unexpectedError": "Beklenmeyen bir hata oluştu.",
+    "noPoster": "Poster bulunamadı",
+    "movie": "Film",
+    "tvShow": "Dizi",
+    "viewDetails": "Detayları görüntüle"
+  },
+  "Detail": {
+    "back": "Ana sayfaya dön",
+    "movie": "Film",
+    "tvShow": "Dizi",
+    "season": "sezon",
+    "seasons": "sezon",
+    "noDescription": "Bu içerik için açıklama bulunmuyor.",
+    "watchTrailer": "Fragmanı izle",
+    "watchProviders": "Nereden izlenir",
+    "browseTitles": "İçeriklere göz at",
+    "trailer": "Fragman",
+    "cast": "Oyuncular",
+    "unknownRole": "Rol bilgisi yok",
+    "similar": "Benzer İçerikler"
+  }
+}

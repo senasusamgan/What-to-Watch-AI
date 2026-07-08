@@ -1,30 +1,44 @@
 import Image from "next/image";
-import Link from "next/link";
 import AiRecommendationForm from "@/components/AiRecommendationForm";
 import { getTrending, searchTitles } from "@/lib/tmdb";
+import { Link } from "@/i18n/routing";
+import { getTranslations } from "next-intl/server";
 
 export default async function Home({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: "en" | "tr" }>;
   searchParams: Promise<{ q?: string }>;
 }) {
-  const params = await searchParams;
-  const query = params.q?.trim() || "";
+  const { locale } = await params;
+  const t = await getTranslations("Home");
+
+  const sp = await searchParams;
+  const query = sp.q?.trim() || "";
 
   const data = query
-    ? await searchTitles(query)
-    : await getTrending();
+    ? await searchTitles(query, locale)
+    : await getTrending(locale);
 
   const results = data.results.filter(
     (item: any) =>
-      (item.media_type === "movie" ||
-        item.media_type === "tv") &&
+      (item.media_type === "movie" || item.media_type === "tv") &&
       item.poster_path
   );
 
   return (
     <main className="min-h-screen bg-black text-white">
       <section className="mx-auto max-w-7xl px-6 py-12">
+        <div className="mb-6 flex justify-end gap-3 text-sm">
+          <Link href="/" locale="tr" className="text-zinc-400 hover:text-white">
+            🇹🇷 TR
+          </Link>
+          <Link href="/" locale="en" className="text-zinc-400 hover:text-white">
+            🇬🇧 EN
+          </Link>
+        </div>
+
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-red-500">
           Movie & TV Recommendations
         </p>
@@ -33,9 +47,7 @@ export default async function Home({
           🎬 What to Watch AI
         </h1>
 
-        <p className="mt-4 text-lg text-zinc-400">
-          Stop scrolling. Start watching.
-        </p>
+        <p className="mt-4 text-lg text-zinc-400">{t("subtitle")}</p>
 
         <AiRecommendationForm />
 
@@ -43,7 +55,7 @@ export default async function Home({
           <input
             name="q"
             defaultValue={query}
-            placeholder="Search movies or TV shows..."
+            placeholder={t("placeholder")}
             className="w-full rounded-2xl border border-zinc-800 bg-zinc-950 px-5 py-4 text-white outline-none transition placeholder:text-zinc-600 focus:border-red-500"
           />
 
@@ -51,32 +63,21 @@ export default async function Home({
             type="submit"
             className="rounded-2xl bg-red-600 px-7 py-4 font-bold transition hover:bg-red-500"
           >
-            Search
+            {t("button")}
           </button>
         </form>
 
         <h2 className="mb-7 mt-12 text-2xl font-bold">
-          {query
-            ? `Search results for “${query}”`
-            : "Trending Now"}
+          {query ? `${t("searchResults")} “${query}”` : t("trending")}
         </h2>
 
         {results.length === 0 ? (
-          <p className="text-zinc-400">
-            No titles found.
-          </p>
+          <p className="text-zinc-400">{t("noTitles")}</p>
         ) : (
           <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {results.slice(0, 15).map((item: any) => {
-              const title =
-                item.title ||
-                item.name ||
-                "Unknown title";
-
-              const type =
-                item.media_type === "tv"
-                  ? "tv"
-                  : "movie";
+              const title = item.title || item.name || "Unknown title";
+              const type = item.media_type === "tv" ? "tv" : "movie";
 
               return (
                 <Link
@@ -96,19 +97,14 @@ export default async function Home({
 
                   <div className="p-4">
                     <p className="mb-2 text-xs font-bold uppercase text-red-500">
-                      {type === "movie"
-                        ? "Movie"
-                        : "TV Show"}
+                      {type === "movie" ? t("movie") : t("tvShow")}
                     </p>
 
-                    <h3 className="line-clamp-2 text-lg font-bold">
-                      {title}
-                    </h3>
+                    <h3 className="line-clamp-2 text-lg font-bold">{title}</h3>
 
                     <p className="mt-2 text-sm text-zinc-400">
                       ⭐{" "}
-                      {typeof item.vote_average ===
-                      "number"
+                      {typeof item.vote_average === "number"
                         ? item.vote_average.toFixed(1)
                         : "N/A"}
                     </p>

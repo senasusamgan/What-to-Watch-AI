@@ -1,0 +1,43 @@
+{
+  "Home": {
+    "title": "What should we watch tonight?",
+    "subtitle": "Describe your mood and get AI-powered movie and TV recommendations.",
+    "button": "Search",
+    "placeholder": "Search movies or TV shows...",
+    "trending": "Trending Now",
+    "searchResults": "Search results for",
+    "noTitles": "No titles found.",
+    "movie": "Movie",
+    "tvShow": "TV Show"
+  },
+  "AIForm": {
+    "label": "AI Recommendations",
+    "title": "Describe what you'd like to watch",
+    "description": "Tell us your mood, preferred genre, duration or similar movies you enjoyed. AI will recommend three titles just for you.",
+    "placeholder": "Example: I want a dark sci-fi movie under two hours with a surprising ending...",
+    "submit": "✨ Recommend",
+    "loading": "Preparing recommendations...",
+    "emptyError": "Please describe what you'd like to watch.",
+    "fetchError": "Something went wrong while getting recommendations.",
+    "unexpectedError": "An unexpected error occurred.",
+    "noPoster": "Poster not available",
+    "movie": "Movie",
+    "tvShow": "TV Show",
+    "viewDetails": "View details"
+  },
+  "Detail": {
+    "back": "Back to home",
+    "movie": "Movie",
+    "tvShow": "TV Show",
+    "season": "season",
+    "seasons": "seasons",
+    "noDescription": "No description is available for this title.",
+    "watchTrailer": "Watch trailer",
+    "watchProviders": "Where to watch",
+    "browseTitles": "Browse titles",
+    "trailer": "Official Trailer",
+    "cast": "Cast",
+    "unknownRole": "Unknown role",
+    "similar": "You May Also Like"
+  }
+}

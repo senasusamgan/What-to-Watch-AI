@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 type Recommendation = {
@@ -15,24 +16,20 @@ type Recommendation = {
 };
 
 export default function AiRecommendationForm() {
+  const t = useTranslations("AIForm");
+
   const [prompt, setPrompt] = useState("");
-  const [recommendations, setRecommendations] = useState<
-    Recommendation[]
-  >([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const cleanedPrompt = prompt.trim();
 
     if (!cleanedPrompt) {
-      setError(
-        "Lütfen nasıl bir şey izlemek istediğini yaz."
-      );
+      setError(t("emptyError"));
       return;
     }
 
@@ -54,19 +51,12 @@ export default function AiRecommendationForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error ||
-            "Öneriler alınırken bir hata oluştu."
-        );
+        throw new Error(data.error || t("fetchError"));
       }
 
       setRecommendations(data.recommendations);
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Beklenmeyen bir hata oluştu."
-      );
+      setError(error instanceof Error ? error.message : t("unexpectedError"));
     } finally {
       setLoading(false);
     }
@@ -75,25 +65,18 @@ export default function AiRecommendationForm() {
   return (
     <section className="mt-12 rounded-3xl border border-zinc-800 bg-zinc-950 p-6 md:p-8">
       <p className="text-sm font-bold uppercase tracking-[0.3em] text-red-500">
-        AI Recommendations
+        {t("label")}
       </p>
 
-      <h2 className="mt-3 text-3xl font-bold">
-        Ne izlemek istediğini anlat
-      </h2>
+      <h2 className="mt-3 text-3xl font-bold">{t("title")}</h2>
 
-      <p className="mt-3 max-w-2xl text-zinc-400">
-        Ruh hâlini, istediğin türü, süreyi veya sevdiğin
-        yapımları yaz. Yapay zekâ sana üç öneri hazırlasın.
-      </p>
+      <p className="mt-3 max-w-2xl text-zinc-400">{t("description")}</p>
 
       <form onSubmit={handleSubmit} className="mt-6">
         <textarea
           value={prompt}
-          onChange={(event) =>
-            setPrompt(event.target.value)
-          }
-          placeholder="Örneğin: Karanlık, sürükleyici ve iki saatten kısa bir bilim kurgu filmi istiyorum..."
+          onChange={(event) => setPrompt(event.target.value)}
+          placeholder={t("placeholder")}
           rows={4}
           className="w-full resize-none rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-white outline-none transition placeholder:text-zinc-600 focus:border-red-500"
         />
@@ -103,9 +86,7 @@ export default function AiRecommendationForm() {
           disabled={loading || !prompt.trim()}
           className="mt-4 rounded-2xl bg-red-600 px-7 py-4 font-bold transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading
-            ? "Öneriler hazırlanıyor..."
-            : "✨ Bana öner"}
+          {loading ? t("loading") : t("submit")}
         </button>
       </form>
 
@@ -131,23 +112,20 @@ export default function AiRecommendationForm() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center px-6 text-center text-zinc-500">
-                      Poster bulunamadı
+                      {t("noPoster")}
                     </div>
                   )}
 
                   {recommendation.voteAverage !== null && (
                     <span className="absolute right-3 top-3 rounded-full bg-black/80 px-3 py-2 text-sm font-bold backdrop-blur-md">
-                      ⭐{" "}
-                      {recommendation.voteAverage.toFixed(1)}
+                      ⭐ {recommendation.voteAverage.toFixed(1)}
                     </span>
                   )}
                 </div>
 
                 <div className="p-5">
                   <p className="text-xs font-bold uppercase tracking-widest text-red-500">
-                    {recommendation.type === "movie"
-                      ? "Movie"
-                      : "TV Show"}
+                    {recommendation.type === "movie" ? t("movie") : t("tvShow")}
                   </p>
 
                   <h3 className="mt-2 text-2xl font-bold">
@@ -164,7 +142,7 @@ export default function AiRecommendationForm() {
 
                   {recommendation.tmdbId && (
                     <p className="mt-5 text-sm font-semibold text-red-400">
-                      Detayları görüntüle →
+                      {t("viewDetails")} →
                     </p>
                   )}
                 </div>

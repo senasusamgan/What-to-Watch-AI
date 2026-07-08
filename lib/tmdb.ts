@@ -1,5 +1,11 @@
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
+export type Locale = "en" | "tr";
+
+function toTMDBLanguage(locale: Locale = "en") {
+  return locale === "tr" ? "tr-TR" : "en-US";
+}
+
 function getAccessToken() {
   const token = process.env.TMDB_ACCESS_TOKEN?.trim();
 
@@ -14,10 +20,11 @@ function getAccessToken() {
 
 async function fetchFromTMDB(
   endpoint: string,
+  locale: Locale = "en",
   params: Record<string, string> = {}
 ) {
   const searchParams = new URLSearchParams({
-    language: "en-US",
+    language: toTMDBLanguage(locale),
     ...params,
   });
 
@@ -50,11 +57,11 @@ async function fetchFromTMDB(
   return response.json();
 }
 
-export async function getTrending() {
-  return fetchFromTMDB("/trending/all/day");
+export async function getTrending(locale: Locale = "en") {
+  return fetchFromTMDB("/trending/all/day", locale);
 }
 
-export async function searchTitles(query: string) {
+export async function searchTitles(query: string, locale: Locale = "en") {
   const cleanedQuery = query.trim();
 
   if (!cleanedQuery) {
@@ -66,7 +73,7 @@ export async function searchTitles(query: string) {
     };
   }
 
-  return fetchFromTMDB("/search/multi", {
+  return fetchFromTMDB("/search/multi", locale, {
     query: cleanedQuery,
     include_adult: "false",
   });
@@ -74,7 +81,8 @@ export async function searchTitles(query: string) {
 
 export async function getDetails(
   type: "movie" | "tv",
-  id: string
+  id: string,
+  locale: Locale = "en"
 ) {
   if (type !== "movie" && type !== "tv") {
     throw new Error("Invalid media type");
@@ -85,11 +93,11 @@ export async function getDetails(
   }
 
   const [details, watchProviders] = await Promise.all([
-    fetchFromTMDB(`/${type}/${id}`, {
+    fetchFromTMDB(`/${type}/${id}`, locale, {
       append_to_response: "videos,credits,recommendations",
     }),
 
-    fetchFromTMDB(`/${type}/${id}/watch/providers`),
+    fetchFromTMDB(`/${type}/${id}/watch/providers`, locale),
   ]);
 
   return {
