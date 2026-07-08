@@ -1,182 +1,241 @@
 # 🎬 What to Watch AI
 
-An AI-powered movie and TV recommendation app built with Next.js, OpenAI, and TMDB.
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-38bdf8)
+![OpenAI](https://img.shields.io/badge/AI-OpenAI-green)
+![TMDB](https://img.shields.io/badge/TMDB-API-01d277)
+![License](https://img.shields.io/badge/License-Portfolio-orange)
 
-Users can describe what they feel like watching, receive three personalized recommendations, and explore each title through posters, ratings, trailers, cast information, and similar content.
+An AI-powered movie and TV discovery platform built with **Next.js**, **TypeScript**, **OpenAI**, and **TMDB**.
 
-## Live Demo
+Describe what you want to watch in natural language and receive personalized movie or TV recommendations powered by AI. Explore each title through trailers, streaming availability, cast information, similar titles, and a fully localized **English / Turkish** interface.
 
-[Open What to Watch AI](https://what-to-watch-ai-9esj.vercel.app/)
+---
 
-## Features
+## 🌐 Live Demo
 
-- Personalized movie and TV recommendations powered by OpenAI
-- Natural-language prompts based on mood, genre, runtime, era, or similar titles
-- Real movie and TV data from TMDB
-- Poster, rating, release year, and recommendation reason
-- Clickable recommendation cards
-- Search for movies and TV shows
-- Daily trending titles
-- Dedicated cinematic detail pages
-- Official trailers embedded from YouTube
-- Cast information
-- Similar and recommended titles
-- Responsive design for desktop and mobile
-- Production deployment through Vercel
+👉 https://what-to-watch-ai-9esj.vercel.app/
 
-## How It Works
+---
 
-1. The user describes what they want to watch.
-2. OpenAI returns three structured recommendations.
-3. Each recommendation is matched with a real TMDB title.
-4. The app displays the poster, rating, year, and AI-generated reason.
-5. Clicking a card opens a detailed title page.
+# ✨ Features
 
-## Tech Stack
+- 🤖 AI-powered movie & TV recommendations
+- 🎭 Natural language search based on mood, genre, actors, runtime, or similar movies
+- 🌍 Full English & Turkish localization (i18n)
+- 🎬 TMDB integration
+- 🔍 Movie & TV search
+- 📈 Daily trending titles
+- 🎥 Official YouTube trailers
+- 📺 Streaming provider availability (Turkey)
+- ⭐ Ratings, genres, runtime and release year
+- 👥 Cast information
+- 🎞️ Similar recommendations
+- 📱 Responsive design
+- ⚡ Server Components & App Router
+- 🚀 Deployed on Vercel
 
-- Next.js
+---
+
+# 🖼 Screenshots
+
+> *(Screenshots will be added soon.)*
+
+- 🏠 Home Page
+- 🤖 AI Recommendation
+- 🎬 Movie Details
+- 🎥 Trailer
+- 📺 Streaming Providers
+- 🌍 Language Switching
+
+---
+
+# 🚀 How It Works
+
+1. Describe what you'd like to watch.
+2. AI analyzes your request.
+3. Three personalized recommendations are generated.
+4. Each recommendation is matched with real TMDB data.
+5. Explore trailers, cast, streaming providers and similar titles.
+
+---
+
+# 🛠 Tech Stack
+
+- Next.js 15
 - React
 - TypeScript
 - Tailwind CSS
+- next-intl
 - OpenAI API
 - TMDB API
 - Zod
 - Vercel
 
-## Project Structure
+---
+
+# 📂 Project Structure
 
 ```text
 what-to-watch-ai/
+│
 ├── app/
+│   ├── [locale]/
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   │   └── title/
+│   │       └── [type]/
+│   │           └── [id]/
+│   │               └── page.tsx
+│   │
 │   ├── api/
 │   │   └── recommend/
 │   │       └── route.ts
-│   ├── title/
-│   │   └── [type]/
-│   │       └── [id]/
-│   │           └── page.tsx
+│   │
 │   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
+│   └── layout.tsx
+│
 ├── components/
-│   └── AiRecommendationForm.tsx
+├── i18n/
 ├── lib/
-│   └── tmdb.ts
+├── messages/
+├── middleware.ts
 ├── public/
 ├── .env.local
 ├── package.json
 └── README.md
 ```
 
-## Getting Started
+---
 
-### 1. Clone the repository
+# ⚙️ Getting Started
+
+## Clone the repository
 
 ```bash
 git clone https://github.com/senasusamgan/What-to-Watch-AI.git
 cd What-to-Watch-AI
 ```
 
-### 2. Install dependencies
+---
+
+## Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Create `.env.local`
+---
 
-Create a file named `.env.local` in the root directory:
+## Create `.env.local`
 
 ```env
-TMDB_ACCESS_TOKEN=your_tmdb_read_access_token
+TMDB_ACCESS_TOKEN=your_tmdb_access_token
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-Do not commit this file or expose your API keys publicly.
+---
 
-### 4. Start the development server
+## Run locally
 
 ```bash
 npm run dev
 ```
 
-Open:
+Open
 
-```text
+```
 http://localhost:3000
 ```
 
-## Environment Variables
+---
+
+# 🔐 Environment Variables
 
 | Variable | Description |
-|---|---|
-| `TMDB_ACCESS_TOKEN` | TMDB API Read Access Token |
-| `OPENAI_API_KEY` | OpenAI API key used for personalized recommendations |
+|-----------|-------------|
+| TMDB_ACCESS_TOKEN | TMDB Read Access Token |
+| OPENAI_API_KEY | OpenAI API Key |
 
-## Example Prompt
+---
 
-```text
-I want a dark, immersive science-fiction movie under two hours.
+# 💬 Example Prompt
+
+```
+I want a dark, emotional sci-fi movie under two hours with an unexpected ending.
 ```
 
-The app returns three recommendations with:
+AI returns:
 
-- Title
-- Type
+- Movie title
+- Movie type
 - Release year
-- AI-generated explanation
-- TMDB poster
+- AI explanation
 - TMDB rating
-- Link to the full detail page
+- Poster
+- Link to detail page
 
-## Deployment
+---
 
-The project is deployed with Vercel.
+# 🚀 Deployment
 
-To deploy your own version:
+The application is deployed using **Vercel**.
 
-1. Push the project to GitHub.
-2. Import the repository into Vercel.
-3. Add `TMDB_ACCESS_TOKEN` and `OPENAI_API_KEY` under Environment Variables.
-4. Deploy the project.
+Deployment steps:
 
-Every new push to the production branch can trigger a new Vercel deployment automatically.
+1. Fork or clone the repository
+2. Import into Vercel
+3. Add Environment Variables
+4. Deploy
 
-## Security
+Every push automatically creates a new deployment.
 
-- API keys are stored in environment variables.
-- OpenAI requests are handled through a server-side API route.
-- Secret keys are never exposed to the browser.
-- `.env.local` should remain excluded through `.gitignore`.
+---
 
-## API Usage
+# 🔒 Security
 
-OpenAI API usage may create charges depending on request volume and the model used.
+- API keys are stored securely using Environment Variables.
+- OpenAI requests run exclusively on the server.
+- Secrets are never exposed to the client.
+- `.env.local` is excluded via `.gitignore`.
 
-TMDB data is provided through the TMDB API.
+---
 
-This product uses the TMDB API but is not endorsed or certified by TMDB.
+# 🎯 Future Improvements
 
-## Future Improvements
+- ❤️ Favorites
+- 📚 Watchlist
+- 👤 User authentication
+- 🧠 Smarter AI explanations
+- 🎞 AI Movie Night mode
+- 🌎 Additional languages
+- 📊 Personalized recommendation history
+- 👥 User profiles
+- 🔗 Share recommendations
 
-- User accounts and saved watchlists
-- Recommendation history
-- Streaming-provider availability
-- Filters for runtime, genre, year, and rating
-- Turkish and English language support
-- Dark and light themes
-- Shareable recommendation lists
-- Feedback controls for improving recommendations
-- Recently viewed titles
-- Personalized profiles
+---
 
-## Author
+# 🙏 Credits
 
-**Ege Özgür**
+Movie and TV information provided by **TMDB**.
 
-- GitHub: [senasusamgan](https://github.com/senasusamgan)
-- Live Project: [What to Watch AI](https://what-to-watch-ai-9esj.vercel.app/)
+This product uses the TMDB API but is **not endorsed or certified by TMDB**.
 
-## License
+---
 
-This project is currently shared for portfolio and educational purposes.
+# 👨‍💻 Author
+
+**Sena Su Samgan**
+
+GitHub:
+https://github.com/senasusamgan
+
+Live Project:
+https://what-to-watch-ai-9esj.vercel.app/
+
+---
+
+# 📄 License
+
+This project is shared for **portfolio and educational purposes**.
