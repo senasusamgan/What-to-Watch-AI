@@ -3,6 +3,8 @@ import { z } from "zod";
 import { zodTextFormat } from "openai/helpers/zod";
 import { searchTitles } from "@/lib/tmdb";
 
+const MAX_PROMPT_LENGTH = 400;
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -21,25 +23,16 @@ const FilmRecommendations = z.object({
 });
 
 function getReleaseYear(item: any) {
-  const releaseDate =
-    item.release_date || item.first_air_date || "";
-
-  return releaseDate
-    ? Number(releaseDate.slice(0, 4))
-    : null;
+  const releaseDate = item.release_date || item.first_air_date || "";
+  return releaseDate ? Number(releaseDate.slice(0, 4)) : null;
 }
 
 export async function POST(request: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
       return Response.json(
-        {
-          error:
-            "OPENAI_API_KEY bulunamadı. .env.local dosyasını kontrol et.",
-        },
-        {
-          status: 500,
-        }
+        { error: "OPENAI_API_KEY bulunamadı. .env.local dosyasını kontrol et." },
+        { status: 500 }
       );
     }
 
@@ -47,26 +40,27 @@ export async function POST(request: Request) {
       prompt?: unknown;
     };
 
-    const prompt =
-      typeof body.prompt === "string"
-        ? body.prompt.trim()
-        : "";
+    const prompt = typeof body.prompt === "string" ? body.prompt.trim() : "";
 
     if (!prompt) {
       return Response.json(
+        { error: "Lütfen nasıl bir şey izlemek istediğini yaz." },
+        { status: 400 }
+      );
+    }
+
+    if (prompt.length > MAX_PROMPT_LENGTH) {
+      return Response.json(
         {
           error:
-            "Lütfen nasıl bir şey izlemek istediğini yaz.",
+            "Mesaj çok uzun. Lütfen 400 karakterden kısa bir istek yaz.",
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
     const response = await openai.responses.parse({
       model: "gpt-5.4-mini",
-
       input: [
         {
           role: "system",
@@ -90,12 +84,8 @@ Rules:
           content: prompt,
         },
       ],
-
       text: {
-        format: zodTextFormat(
-          FilmRecommendations,
-          "film_recommendations"
-        ),
+        format: zodTextFormat(FilmRecommendations, "film_recommendations"),
       },
     });
 
@@ -103,83 +93,33 @@ Rules:
 
     if (!parsed) {
       return Response.json(
-        {
-          error:
-            "AI geçerli bir öneri listesi oluşturamadı.",
-        },
-        {
-          status: 500,
-        }
+        { error: "AI geçerli bir öneri listesi oluşturamadı." },
+        { status: 500 }
       );
     }
 
     const recommendations = await Promise.all(
-      parsed.recommendations.map(
-        async (recommendation) => {
-          try {
-            const tmdbData = await searchTitles(
-              recommendation.title
-            );
+      parsed.recommendations.map(async (recommendation) => {
+        try {
+          const tmdbData = await searchTitles(recommendation.title);
 
-            const validResults =
-              tmdbData.results?.filter(
-                (item: any) =>
-                  item.media_type === "movie" ||
-                  item.media_type === "tv"
-              ) || [];
+          const validResults =
+            tmdbData.results?.filter(
+              (item: any) =>
+                item.media_type === "movie" || item.media_type === "tv"
+            ) || [];
 
-            const sameTypeResults =
-              validResults.filter(
-                (item: any) =>
-                  item.media_type ===
-                  recommendation.type
-              );
+          const sameTypeResults = validResults.filter(
+            (item: any) => item.media_type === recommendation.type
+          );
 
-            const exactMatch =
-              sameTypeResults.find(
-                (item: any) =>
-                  getReleaseYear(item) ===
-                  recommendation.year
-              );
+          const exactMatch = sameTypeResults.find(
+            (item: any) => getReleaseYear(item) === recommendation.year
+          );
 
-            const match =
-              exactMatch ||
-              sameTypeResults[0] ||
-              validResults[0];
+          const match = exactMatch || sameTypeResults[0] || validResults[0];
 
-            if (!match) {
-              return {
-                ...recommendation,
-                tmdbId: null,
-                posterPath: null,
-                voteAverage: null,
-              };
-            }
-
-            return {
-              ...recommendation,
-
-              type:
-                match.media_type === "tv"
-                  ? "tv"
-                  : "movie",
-
-              tmdbId: match.id,
-
-              posterPath:
-                match.poster_path || null,
-
-              voteAverage:
-                typeof match.vote_average === "number"
-                  ? match.vote_average
-                  : null,
-            };
-          } catch (error) {
-            console.error(
-              `TMDB match error for ${recommendation.title}:`,
-              error
-            );
-
+          if (!match) {
             return {
               ...recommendation,
               tmdbId: null,
@@ -187,27 +127,37 @@ Rules:
               voteAverage: null,
             };
           }
+
+          return {
+            ...recommendation,
+            type: match.media_type === "tv" ? "tv" : "movie",
+            tmdbId: match.id,
+            posterPath: match.poster_path || null,
+            voteAverage:
+              typeof match.vote_average === "number"
+                ? match.vote_average
+                : null,
+          };
+        } catch (error) {
+          console.error(`TMDB match error for ${recommendation.title}:`, error);
+
+          return {
+            ...recommendation,
+            tmdbId: null,
+            posterPath: null,
+            voteAverage: null,
+          };
         }
-      )
+      })
     );
 
-    return Response.json({
-      recommendations,
-    });
+    return Response.json({ recommendations });
   } catch (error) {
-    console.error(
-      "Recommendation API error:",
-      error
-    );
+    console.error("Recommendation API error:", error);
 
     return Response.json(
-      {
-        error:
-          "Öneriler oluşturulurken bir hata meydana geldi.",
-      },
-      {
-        status: 500,
-      }
+      { error: "Öneriler oluşturulurken bir hata meydana geldi." },
+      { status: 500 }
     );
   }
 }
